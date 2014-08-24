@@ -4,6 +4,8 @@ ksmps=10
 nchnls=2
 0dbfs=1
 
+  gal       init      0
+  gar       init      0
   gitlen     init  32768
 
 instr 1 
@@ -37,6 +39,7 @@ instr 15;
 endin
 
 instr 19; record head 
+
   kfader    init      1
   kpan      init      1
   kfadert   tab       p4, 2, 0  ;dry volume
@@ -50,15 +53,19 @@ instr 19; record head
 
   al,ar     ins
  
-  at        phasor    kpan*sr/(gitlen*gktlen)
-            tabw      al, at*gitlen*gktlen,   3
-            tabw      ar, at*gitlen*gktlen,   4
+  gat       phasor    kpan*sr/(gitlen*gktlen)     ;gat rec head position
+            tabw      al, gat*gitlen*gktlen,   3
+            tabw      ar, gat*gitlen*gktlen,   4
             outs      al*kfader, ar*kfader
+  gar       =  gar+ar*kfader
+  gal       =  gal+al*kfader
+
 endin
 
 instr 20;  pb head
-
-    ; fader reading
+  ktoptg    init      0 ; top button toggle state
+  ktopp     init      0 ; top button prevois state
+  kat       init      0
   kfader    init      0
   kpan      init      0
   kfadert   tab       p4, 2, 0 ;pb volume
@@ -69,10 +76,15 @@ instr 20;  pb head
     ; cleanup zicks
   kfader    =  ((63*kfader+kfadert/127)/64)
   kpan      =  ((63*kpan+kpant/127)/64)
-
-
-
-  at1        phasor kpan*sr/(gktlen*gitlen)
+    ; toggle state
+ if ktopp ==0 && ktop !=0 then
+  ktopptg   =  ~ktopptg
+ endif
+  ktopp     =  ktop
+  
+    ; sample position control 
+  at        phasor kpan*sr/(gktlen*gitlen)
+   
 
   ainl     tab       at*gitlen*gktlen,  3
   ainr     tab       at*gitlen*gktlen , 4
@@ -81,6 +93,14 @@ instr 20;  pb head
   al        =  kfader*ainl  ;*(kpan/128-1)
 
            outs      al,ar
+  gar       =  gar+ar
+  gal       =  gal+al
+
 endin
 
+instr 99 ; file recording
 
+            fout      "tape_echo.wav", 2, gal, gar
+  gal       =  0
+  gar       =  0
+endin

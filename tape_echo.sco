@@ -5,7 +5,7 @@ f3 0 32768 2 0 0
 f4 0 32768 2 0 0
 
         ;  midi data reader and table writer
-i1 0 3600
+i1 0 36000
 ;  table interperters
 ;  hash function: gkdata1+(128*gkchan)
 ;  order:  fader, pan, top, bottom
@@ -15,20 +15,21 @@ i1 0 3600
 ; this set is default for scene 1
 
         ;; len
-i15 0 360 2  14 23 33
+i15 0 36000 2  14 23 33
         ;; rec
-i19 0 3600 3  15 24 34
+i19 0 36000 3  15 24 34
 
         ;; pb
 
-i20 0 3600 4  16 25 35
-i20 0 3600 5  17 26 36
-i20 0 3600 6  18 27 37
-i20 0 3600 8  19 28 38
-i20 0 3600 9  20 29 39
-i20 0 3600 12 21 30 40
-i20 0 3600 13 22 31 41
+i20 0 36000 4  16 25 35
+i20 0 36000 5  17 26 36
+i20 0 36000 6  18 27 37
+i20 0 36000 8  19 28 38
+i20 0 36000 9  20 29 39
+i20 0 36000 12 21 30 40
+i20 0 36000 13 22 31 41
 
-
+        ;; file record
+i99 0 36000
 
 ;  scene  4 table interpreters
