@@ -1,11 +1,13 @@
 f1 0 4096 10 1                          ; sines for oscil
-f2 0 4096 17 0 0                        ; mixer data landing table
+f2  0 4096  17    0     0               ; mixer data landing table
 ; f3 0 16777216 1 "test2.wav" 0 4 0       
-f3 0 32768 2 0 0
-f4 0 32768 2 0 0
-
+f3  0 32768 2     0     0               ; record
+f4  0 32768 2     0     0               ; record
+f5  0 0     -23    "2_3ratios.txt"        ;  ratios for speeds
         ;  midi data reader and table writer
-i1 0 36000
+        
+; i1 0 1                                  ; global
+i10 0 36000
 ;  table interperters
 ;  hash function: gkdata1+(128*gkchan)
 ;  order:  fader, pan, top, bottom
@@ -29,7 +31,7 @@ i20 0 36000 9  20 29 39
 i20 0 36000 12 21 30 40
 i20 0 36000 13 22 31 41
 
-        ;; file record
-i99 0 36000
+        ;; file record 
+;i99 0 36000                             ; 
 
 ;  scene  4 table interpreters
