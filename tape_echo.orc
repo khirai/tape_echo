@@ -7,7 +7,7 @@ nchnls=2
 
   gal       init      0
   gar       init      0
-  gitlen    init      32768
+  gitlen    init      131072
   giratlen  init      32      
   gkglis    init      127
 
@@ -46,6 +46,8 @@ instr 19; record head
 
   kfader    init      1
   kpan      init      1
+  ktoptg    init      0 ; top button toggle state
+  ktopp     init      0 ; top button prevois state
   kfadert   tab       p4, 2, 0  ;dry volume
   kpant     tab       p5, 2, 0  ;record speed 
   ktop      tab       p6, 2, 0
@@ -55,18 +57,27 @@ instr 19; record head
   kfader    =  ((63*kfader+kfadert/127)/64)
   kpantr    tab       kpant/127,5,1               ;ratio table
   kpan      =  ((63*kpan+kpantr)/64)
-            printks   , "kpan:%f kpant:%f kpantr:%f\n",1,kpan,kpant, kpantr
+
+  if ktopp==0 && ktop!=0 then
+    ktoptg    =  ~ktoptg
+  endif
+  ktopp     =  ktop
+
             printks   ,"rec:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpantr,ktop,kbot
   al,ar     ins
  
   gat       phasor    kpan*sr/(gitlen*gktlen)     ;gat rec head position
+  if ktoptg == 0 then
             tabw      al, gat*gitlen*gktlen,   3
             tabw      ar, gat*gitlen*gktlen,   4
+  endif
             outs      al*kfader, ar*kfader
 
 endin
 
 instr 20;  pb head
+  atoff     init      0  ; offset to sync with record head
+  at        init      0  ; position [0-1] of read head 
   ktoptg    init      0 ; top button toggle state
   ktopp     init      0 ; top button prevois state
   kat       init      0
@@ -82,9 +93,9 @@ instr 20;  pb head
  kpantr    tab       kpant/127,5,1                   ;ratio table
   kpan      =  ((63*kpan+kpantr)/64)
  
-    ; toggle state
+    ; leading edge 
  if ktopp ==0 && ktop !=0 then
-  ktoptg   =  ~ktoptg
+  katoff     =  frac (1 + at - gat)        ;setting sync after some dialing in
  endif
   ktopp     =  ktop
 
@@ -93,8 +104,8 @@ instr 20;  pb head
   at        phasor kpan*sr/(gktlen*gitlen)
    
 
-  ainl     tab       at*gitlen*gktlen,  3
-  ainr     tab       at*gitlen*gktlen , 4
+  ainl     tab       frac(at+katoff)*gitlen*gktlen,  3
+  ainr     tab       frac(at+katoff)*gitlen*gktlen , 4
 
   ar        =  kfader*ainr  ;*(kpan/128)
   al        =  kfader*ainl  ;*(kpan/128-1)
