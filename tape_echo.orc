@@ -10,6 +10,25 @@ nchnls=2
   gitlen    init      131072
   giratlen  init      32      
   gkglis    init      127
+  gkeykp      init      0   ;; page the kontrol has table
+
+instr 9  ;;sensekey for paging the kontrol hash table
+  keyrawold init 0 
+  keyraw      sensekey
+  if keyrawold == -1 then
+    if keyraw >=48 && keyraw <= 57 then ;;digits
+      gkeykp      =  keyraw-48
+    endif
+    if keyraw == 45 then ;; '-' load table
+            ftloadk    "konthashtab", 1, 1, 2
+    endif
+    if keyraw == 61 then ;; '=' save table
+            ftsavek    "konthashtab", 1, 1, 2
+    endif
+  endif
+  keyrawold =  keyraw
+           printk2    gkeykp
+endin
 
 instr 10 
 ; this instr hashes gkdata1 and gkchan 
@@ -21,13 +40,13 @@ al = 0
   khash     =  kdata1+(128*(kchan-1))
 if (khash > 0 ) then 
             tabw      kdata2,khash , 2
-   printks   ,"rd :%d %d %d %d %d\n", 1.0, khash, kstatus, kchan, kdata1, kdata2
+   printks   ,"rd :%i %d %d %d %d %d\n", 1.0, gkeykp, khash, kstatus, kchan, kdata1, kdata2
 endif
 
 endin
 
 
-instr 15;
+instr 15;  manages the length of the tape loop
   kfader    init      127
   kpan      init      1
   kfadert   tab       p4, 2, 0
@@ -39,6 +58,7 @@ instr 15;
 ;  kfader    =  ((63*kfader+kfadert/127)/64)
   gkglis    =  kfader
   kpan      =  ((1023*kpan+kpant/127)/1024)
+    ;; length of the  segment we are looping on 
   gktlen    =  (kpan*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
 endin
 
@@ -68,10 +88,19 @@ instr 19; record head
  
   gat       phasor    kpan*sr/(gitlen*gktlen)     ;gat rec head position
   if ktoptg == 0 then
-            tabw      al, gat*gitlen*gktlen,   3
-            tabw      ar, gat*gitlen*gktlen,   4
+    ;; adjusteded head position in samples
+    aheadpos= gat*gitlen*gktlen
+    ;; sound on sound read
+    arl       tab       aheadpos,   3
+    arr       tab       aheadpos,   4
+    ;; set up the mix
+    awl       =  arl*kfader+al
+    awr       =  arr*kfader+ar
+    ;; write to table 
+            tabw      awl, aheadpos,   3
+            tabw      awr, aheadpos,   4
   endif
-            outs      al*kfader, ar*kfader
+;            outs      al*kfader, ar*kfader
 
 endin
 

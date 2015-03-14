@@ -7,6 +7,7 @@ f5  0 0     -23    "2_3ratios.txt"        ;  ratios for speeds
         ;  midi data reader and table writer
         
 ; i1 0 1                                  ; global
+i9  0 36000
 i10 0 36000
 ;  table interperters
 ;  hash function: gkdata1+(128*gkchan)
