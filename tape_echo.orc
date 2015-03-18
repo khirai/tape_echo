@@ -1,6 +1,6 @@
 sr=48000
-kr=4800
-ksmps=10
+kr=48000
+ksmps=1
 nchnls=2
 0dbfs=1
 
@@ -40,8 +40,9 @@ al = 0
   khash     =  kdata1+(128*(kchan-1))
 if (khash > 0 ) then 
             tabw      kdata2,khash , 2
-   printks   ,"rd :%i %d %d %d %d %d\n", 1.0, gkeykp, khash, kstatus, kchan, kdata1, kdata2
+
 endif
+            printks   ,"rd :%i %d %d %d %d %d\n", 1.0, gkeykp, khash, kstatus, kchan, kdata1, kdata2
 
 endin
 
@@ -75,7 +76,7 @@ instr 19; record head
 
     ; cleanup zicks
   kfader    =  ((63*kfader+kfadert/127)/64)
-  kpantr    tab       kpant/127,5,1               ;ratio table
+  kpantr    tab       kpant/128,5,1               ;ratio table
   kpan      =  ((63*kpan+kpantr)/64)
 
   if ktopp==0 && ktop!=0 then
@@ -119,7 +120,7 @@ instr 20;  pb head
 
     ; cleanup zicks
   kfader    =  ((63*kfader+kfadert/127)/64)
- kpantr    tab       kpant/127,5,1                   ;ratio table
+ kpantr    tab       kpant/128,5,1                   ;ratio table
   kpan      =  ((63*kpan+kpantr)/64)
  
     ; leading edge 
