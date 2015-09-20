@@ -5,10 +5,10 @@ nchnls=2
 0dbfs=1
 
 
-  gal       init      0
+  gal       init      0    ;; global audio 
   gar       init      0
-  gitlen    init      131072
-  giratlen  init      32      
+  gitlen    init      131072  ;; length of the segment of tape we are looping on
+ ; giratlen  init      32      
   gkglis    init      127
   gkeykp      init      0   ;; page the kontrol has table
 
@@ -35,7 +35,7 @@ instr 10
 ; and writes that data at that point in table 2  
 ar = 0
 al = 0
-
+gkdry  init 0
   kstatus, kchan, kdata1, kdata2                  midiin  
   khash     =  kdata1+(128*(kchan-1))
 if (khash > 0 ) then 
@@ -61,7 +61,10 @@ instr 15;  manages the length of the tape loop
   kpan      =  ((1023*kpan+kpant/127)/1024)
     ;; length of the  segment we are looping on 
   gktlen    =  (kpan*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
-endin
+
+;  gkdry     =  kfader
+
+    endin
 
 instr 19; record head 
 
@@ -86,7 +89,7 @@ instr 19; record head
 
             printks   ,"rec:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpantr,ktop,kbot
   al,ar     ins
- 
+;            outs      al/64.0*gkdry, ar/64.0*gkdry
   gat       phasor    kpan*sr/(gitlen*gktlen)     ;gat rec head position
   if ktoptg == 0 then
     ;; adjusteded head position in samples
