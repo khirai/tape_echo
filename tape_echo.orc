@@ -1,4 +1,4 @@
-sr=48000
+r=48000
 kr=48000
 ksmps=1
 nchnls=2
@@ -72,6 +72,8 @@ instr 19; record head
   kpan      init      1
   ktoptg    init      0 ; top button toggle state
   ktopp     init      0 ; top button prevois state
+  kbottg    init      0 ; top button toggle state
+  kbotp     init      0 ; top button prevois state
   kfadert   tab       p4, 2, 0  ;dry volume
   kpant     tab       p5, 2, 0  ;record speed 
   ktop      tab       p6, 2, 0
@@ -86,23 +88,30 @@ instr 19; record head
     ktoptg    =  ~ktoptg
   endif
   ktopp     =  ktop
-
-            printks   ,"rec:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpantr,ktop,kbot
+  if kbotp==0 && kbot!=0 then
+    kbottg    =  ~kbottg
+  endif
+  kbotp     =  kbot
+  
+            printks   ,"rec:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpantr,ktoptg,kbottg
   al,ar     ins
-;            outs      al/64.0*gkdry, ar/64.0*gkdry
-  gat       phasor    kpan*sr/(gitlen*gktlen)     ;gat rec head position
-  if ktoptg == 0 then
+
+    gat     phasor    kpan*sr/(gitlen*gktlen)     ;gat rec head position
+
     ;; adjusteded head position in samples
     aheadpos= gat*gitlen*gktlen
-    ;; sound on sound read
-    arl       tab       aheadpos,   3
-    arr       tab       aheadpos,   4
-    ;; set up the mix
-    awl       =  arl*kfader+al
-    awr       =  arr*kfader+ar
-    ;; write to table 
-            tabw      awl, aheadpos,   3
-            tabw      awr, aheadpos,   4
+
+;; top and bottom track sound on sound
+ 
+  if ktoptg == 0 then   
+    arl       tab   aheadpos,   3       ;; sound on sound read
+    awl       =     arl*kfader+al       ;; set up the mix
+              tabw  awl, aheadpos,   3  ;; write to table
+  endif
+  if ktoptg == 0 then
+    arr       tab   aheadpos,   4       ;; sound on sound read
+    awr       =     arr*kfader+ar       ;; set up the mix
+              tabw  awr, aheadpos,   4  ;; write to table 
   endif
 ;            outs      al*kfader, ar*kfader
 
