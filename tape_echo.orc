@@ -108,7 +108,7 @@ instr 19; record head
     awl       =     arl*kfader+al       ;; set up the mix
               tabw  awl, aheadpos,   3  ;; write to table
   endif
-  if ktoptg == 0 then
+  if kbottg == 0 then
     arr       tab   aheadpos,   4       ;; sound on sound read
     awr       =     arr*kfader+ar       ;; set up the mix
               tabw  awr, aheadpos,   4  ;; write to table 
