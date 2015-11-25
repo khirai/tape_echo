@@ -13,6 +13,7 @@ nchnls=2
   gkeykp      init      0   ;; page the kontrol has table
 
 instr 9  ;;sensekey for paging the kontrol hash table
+         ;; and string initialization
   keyrawold init 0 
   keyraw      sensekey
   if keyrawold == -1 then
@@ -27,7 +28,16 @@ instr 9  ;;sensekey for paging the kontrol hash table
     endif
   endif
   keyrawold =  keyraw
-           printk2    gkeykp
+
+;;string initialization
+  gSline1   =  {{     1        2        3        4        5        6        7         }}
+  gSpan     =  {{pan: }}
+  gSfad     =  {{fad: }}  
+  gSup      =  {{up:  }}
+  gSdown    =  {{down:}}
+
+
+;;           printk2    gkeykp
 endin
 
 instr 10 
@@ -54,7 +64,14 @@ instr 15;  manages the length of the tape loop
   kpant     tab       p5, 2, 0
   ktop      tab       p6, 2, 0
   kbot      tab       p7, 2, 0
+
             printks   ,"len:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot
+  gSpan     sprintfk  ,"%s%1.4f ",gSpan,kpan
+  gSfad     sprintfk  ,"%s%1.4f ",gSfad,kfader
+  gStop     sprintfk  ,"%s%6d ",gStop,ktop
+  gSbot     sprintfk  ,"%s%6d ",gSbot,kbot
+
+
     ; cleanup zicks
 ;  kfader    =  ((63*kfader+kfadert/127)/64)
   gkglis    =  kfader
@@ -94,7 +111,12 @@ instr 19; record head
   kbotp     =  kbot
   
             printks   ,"rec:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpantr,ktoptg,kbottg
-  al,ar     ins
+  gSpan     sprintfk  ,"%s%1.4f ",gSpan,kpantr
+  gSfad     sprintfk  ,"%s%1.4f ",gSfad,kfader
+  gStop     sprintfk  ,"%s%6d ",gStop,ktoptg
+  gSbot     sprintfk  ,"%s%6d ",gSbot,kbottg
+
+  al,ar     ins       
 
     gat     phasor    kpan*sr/(gitlen*gktlen)     ;gat rec head position
 
@@ -142,6 +164,12 @@ instr 20;  pb head
   ktopp     =  ktop
 
             printks   ,"pb :%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot  
+  gSpan     sprintfk  ,"%s%1.4f ",gSpan,kpan
+  gSfad     sprintfk  ,"%s%1.4f ",gSfad,kfader
+  gStop     sprintfk  ,"%s%6d ",gStop,ktop
+  gSbot     sprintfk  ,"%s%6d ",gSbot,kbot
+
+
     ; sample position control 
   at        phasor kpan*sr/(gktlen*gitlen)
    
