@@ -185,7 +185,12 @@ instr 20;  pb head
 endin
 
 instr 99 ; file recording
-  al, ar    monitor   
-            fout      "tape_echo.wav", 14, al, ar
+;  al, ar    monitor   
+;            fout      "tape_echo.wav", 14, al, ar
+            printk    gSpan
+            printk    gSfad
+            printk    gStop
+            printk    gSbot
+    
 
 endin
