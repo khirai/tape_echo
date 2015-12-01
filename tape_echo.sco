@@ -1,8 +1,8 @@
 f1 0 4096 10 1                          ; sines for oscil
 f2  0 4096  17    0     0               ; mixer data landing table
 ; f3 0 16777216 1 "test2.wav" 0 4 0       
-f3  0 131072 2     0     0               ; record
-f4  0 131072 2     0     0               ; record
+f3  0 [131072*8]  2     0     0               ; record
+f4  0 [131072*8]  2     0     0               ; record
 f5  0 0     -23    "2_3ratios.txt"        ;  ratios for speeds
         ;  midi data reader and table writer
         

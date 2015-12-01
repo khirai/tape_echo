@@ -7,7 +7,7 @@ nchnls=2
 
   gal       init      0    ;; global audio 
   gar       init      0
-  gitlen    init      131072  ;; length of the segment of tape we are looping on
+  gitlen    init      131072*8  ;; length of the segment of tape we are looping on
  ; giratlen  init      32      
   gkglis    init      127
   gkeykp      init      0   ;; page the kontrol has table
