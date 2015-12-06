@@ -33,6 +33,6 @@ i20 0 36000 12 21 30 40
 i20 0 36000 13 22 31 41
 
         ;; file record 
-;i99 0 36000                             ; 
+i99 0 36000                             ; 
 
 ;  scene  4 table interpreters
