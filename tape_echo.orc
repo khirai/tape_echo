@@ -31,7 +31,7 @@ instr 9  ;;sensekey for paging the kontrol hash table
 
 ;;string initialization
   ktime     timeinstk   
-  gkprnctl  metro     4
+  gkprnctl  metro     1
 if gkprnctl == 1 then   
   gSline1   sprintfk  "%s", {{      1 len  2 rec  3 pb   4      5      6      7      8      9}}
   gSpan     sprintfk "%s",  {{pan: }}
@@ -55,7 +55,7 @@ if (khash > 0 ) then
             tabw      kdata2,khash , 2
 
 endif
-;            printks   ,"rd :%i %d %d %d %d %d\n", 1.0, gkeykp, khash, kstatus, kchan, kdata1, kdata2
+            printks   ,"rd :%i %d %d %d %d %d\n", 1.0, gkeykp, khash, kstatus, kchan, kdata1, kdata2
 
 endin
 
@@ -74,8 +74,13 @@ instr 15;  manages the length of the tape loop
   klenmult  =  1.0 / int (kfader* 8)
   kpan      =  ((1023*kpan+kpant/127)/1024)
     ;; length of the  segment we are looping on 
+<<<<<<< HEAD
   gktlen    =  (kpan*(gitlen-ksmps)+ksmps)/gitlen * klenmult ;so we always play at least ksmps samples
 ;            printks   ,"len:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot
+=======
+  gktlen    =  (kpan*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
+            printks   ,"len:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot
+>>>>>>> parent of e5d4fce... removed old displays. played with refresh rate
 if gkprnctl == 1 then
   Span     sprintfk  ,"%s%1.4f ",gSpan,kpan
   Sfad     sprintfk  ,"%s%1.4f ",gSfad,kfader
@@ -119,7 +124,7 @@ instr 19; record head
   endif
   kbotp     =  kbot
   
-;            printks   ,"rec:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpantr,ktoptg,kbottg
+            printks   ,"rec:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpantr,ktoptg,kbottg
 if gkprnctl == 1 then
   Span     sprintfk  ,"%s%1.4f ",gSpan,kpantr
   Sfad     sprintfk  ,"%s%1.4f ",gSfad,kfader
@@ -177,7 +182,7 @@ instr 20;  pb head
  endif
   ktopp     =  ktop
 
-;            printks   ,"pb :%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot  
+            printks   ,"pb :%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot  
 if gkprnctl == 1 then
   Span     sprintfk  ,"%s%1.4f ",gSpan,kpan
   Sfad     sprintfk  ,"%s%1.4f ",gSfad,kfader
