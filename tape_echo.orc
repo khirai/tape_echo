@@ -71,11 +71,14 @@ instr 15;  manages the length of the tape loop
     ; cleanup zicks
 ;  kfader    =  ((63*kfader+kfadert/127)/64)
   kfader    =  kfader/127.0
-  klenmult  =  1.0 / int (kfader* 8)
   kpan      =  ((1023*kpan+kpant/127)/1024)
     ;; length of the  segment we are looping on 
 <<<<<<< HEAD
+<<<<<<< HEAD
   gktlen    =  (kpan*(gitlen-ksmps)+ksmps)/gitlen * klenmult ;so we always play at least ksmps samples
+=======
+  gktlen    =  (kpan*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
+>>>>>>> parent of 81362c6... fader 1 quantitization
 ;            printks   ,"len:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot
 =======
   gktlen    =  (kpan*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
