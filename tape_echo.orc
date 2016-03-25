@@ -61,32 +61,26 @@ endin
 
 
 instr 15;  manages the length of the tape loop
-  kfader    init      127
+  kfader    init      1
   kpan      init      1
-  kfader    tab       p4, 2, 0
+  kfadert    tab       p4, 2, 0
   kpant     tab       p5, 2, 0
   ktop      tab       p6, 2, 0
   kbot      tab       p7, 2, 0
 
     ; cleanup zicks
-;  kfader    =  ((63*kfader+kfadert/127)/64)
-  kfader    =  kfader/127.0
+  kfader    =  ((63*kfader+kfadert/127.0)/64)
+  kfaderd2  tab kfader,5 ,1
   kpan      =  ((1023*kpan+kpant/127)/1024)
     ;; length of the  segment we are looping on 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  gktlen    =  (kpan*(gitlen-ksmps)+ksmps)/gitlen * klenmult ;so we always play at least ksmps samples
-=======
-  gktlen    =  (kpan*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
->>>>>>> parent of 81362c6... fader 1 quantitization
-;            printks   ,"len:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot
-=======
-  gktlen    =  (kpan*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
-            printks   ,"len:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot
->>>>>>> parent of e5d4fce... removed old displays. played with refresh rate
+
+
+
+  gktlen    =  (kpan*kfaderd2*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
+
 if gkprnctl == 1 then
   Span     sprintfk  ,"%s%1.4f ",gSpan,kpan
-  Sfad     sprintfk  ,"%s%1.4f ",gSfad,kfader
+  Sfad     sprintfk  ,"%s%1.4f ",gSfad,kfaderd2
   Stop     sprintfk  ,"%s%6d ",gStop,ktop
   Sbot      sprintfk  ,"%s%6d ",gSbot,kbot
   gSpan     strcpyk  Span
