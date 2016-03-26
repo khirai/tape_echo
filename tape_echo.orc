@@ -9,10 +9,11 @@ nchnls=2
   gar       init      0
   gitlen    init      131072*8  ;; length of the segment of tape we are looping on
  ; giratlen  init      32      
-  gkglis    init      127
-  gkeykp      init      0   ;; page the kontrol has table
+  gkeykp    init      0                           ;; page the kontrol has table
+  gkprnctl  init      0
 
 instr 9  ;;sensekey for paging the kontrol hash table
+         ;; and string initialization
   keyrawold init 0 
   keyraw      sensekey
   if keyrawold == -1 then
@@ -27,7 +28,19 @@ instr 9  ;;sensekey for paging the kontrol hash table
     endif
   endif
   keyrawold =  keyraw
-           printk2    gkeykp
+
+;;string initialization
+  ktime     timeinstk   
+  gkprnctl  metro     1
+if gkprnctl == 1 then   
+  gSline1   sprintfk  "%s", {{      1 len  2 rec  3 pb   4      5      6      7      8      9}}
+  gSpan     sprintfk "%s",  {{pan: }}
+  gSfad     sprintfk "%s",  {{fad: }}  
+  gStop     sprintfk "%s",  {{top: }}
+  gSbot     sprintfk "%s",  {{bot: }}
+endif
+
+;;           printk2    gkeykp
 endin
 
 instr 10 
@@ -48,19 +61,34 @@ endin
 
 
 instr 15;  manages the length of the tape loop
-  kfader    init      127
+  kfader    init      1
   kpan      init      1
-  kfadert   tab       p4, 2, 0
+  kfadert    tab       p4, 2, 0
   kpant     tab       p5, 2, 0
   ktop      tab       p6, 2, 0
   kbot      tab       p7, 2, 0
-            printks   ,"len:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot
+
     ; cleanup zicks
-;  kfader    =  ((63*kfader+kfadert/127)/64)
-  gkglis    =  kfader
+  kfader    =  ((63*kfader+kfadert/127.0)/64)
+  kfaderd2  tab kfader,5 ,1
   kpan      =  ((1023*kpan+kpant/127)/1024)
     ;; length of the  segment we are looping on 
-  gktlen    =  (kpan*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
+
+
+
+  gktlen    =  (kpan*kfaderd2*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
+
+if gkprnctl == 1 then
+  Span     sprintfk  ,"%s%1.4f ",gSpan,kpan
+  Sfad     sprintfk  ,"%s%1.4f ",gSfad,kfaderd2
+  Stop     sprintfk  ,"%s%6d ",gStop,ktop
+  Sbot      sprintfk  ,"%s%6d ",gSbot,kbot
+  gSpan     strcpyk  Span
+  gSfad     strcpyk  Sfad
+  gStop     strcpyk  Stop
+  gSbot     strcpyk  Sbot 
+endif
+
 
 ;  gkdry     =  kfader
 
@@ -94,7 +122,17 @@ instr 19; record head
   kbotp     =  kbot
   
             printks   ,"rec:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpantr,ktoptg,kbottg
-  al,ar     ins
+if gkprnctl == 1 then
+  Span     sprintfk  ,"%s%1.4f ",gSpan,kpantr
+  Sfad     sprintfk  ,"%s%1.4f ",gSfad,kfader
+  Stop     sprintfk  ,"%s%6d ",gStop,ktoptg
+  Sbot      sprintfk  ,"%s%6d ",gSbot,kbottg
+  gSpan     strcpyk  Span
+  gSfad     strcpyk  Sfad
+  gStop     strcpyk  Stop
+  gSbot     strcpyk  Sbot 
+endif
+  al,ar     ins       
 
     gat     phasor    kpan*sr/(gitlen*gktlen)     ;gat rec head position
 
@@ -142,6 +180,17 @@ instr 20;  pb head
   ktopp     =  ktop
 
             printks   ,"pb :%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot  
+if gkprnctl == 1 then
+  Span     sprintfk  ,"%s%1.4f ",gSpan,kpan
+  Sfad     sprintfk  ,"%s%1.4f ",gSfad,kfader
+  Stop     sprintfk  ,"%s%6d ",gStop,ktop
+  Sbot      sprintfk  ,"%s%6d ",gSbot,kbot 
+  gSpan     strcpyk  Span
+  gSfad     strcpyk  Sfad
+  gStop     strcpyk  Stop
+  gSbot     strcpyk  Sbot 
+endif
+
     ; sample position control 
   at        phasor kpan*sr/(gktlen*gitlen)
    
@@ -157,7 +206,19 @@ instr 20;  pb head
 endin
 
 instr 99 ; file recording
-  al, ar    monitor   
-            fout      "tape_echo.wav", 14, al, ar
+;  al, ar    monitor   
+;            fout      "tape_echo.wav", 14, al, ar
+            printf "%s\n", gkprnctl,  gSline1
+            printf "%s\n", gkprnctl,  gSpan
+            printf "%s\n", gkprnctl,    gSfad
+            printf "%s\n", gkprnctl,    gStop
+            printf "%s\n", gkprnctl,   gSbot       
+; if gkprnctl == 1 then
+;   gSpan     =  ""
+;   gSfad     =  ""
+;   gStop     =  ""
+;   gSbot     =  ""
+;   gkprnctl  =  0
+; endif
 
 endin
