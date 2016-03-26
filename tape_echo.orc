@@ -55,7 +55,7 @@ if (khash > 0 ) then
             tabw      kdata2,khash , 2
 
 endif
-            printks   ,"rd :%i %d %d %d %d %d\n", 1.0, gkeykp, khash, kstatus, kchan, kdata1, kdata2
+;            printks   ,"rd :%i %d %d %d %d %d\n", 1.0, gkeykp, khash, kstatus, kchan, kdata1, kdata2
 
 endin
 
@@ -121,7 +121,7 @@ instr 19; record head
   endif
   kbotp     =  kbot
   
-            printks   ,"rec:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpantr,ktoptg,kbottg
+;            printks   ,"rec:%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpantr,ktoptg,kbottg
 if gkprnctl == 1 then
   Span     sprintfk  ,"%s%1.4f ",gSpan,kpantr
   Sfad     sprintfk  ,"%s%1.4f ",gSfad,kfader
@@ -179,7 +179,7 @@ instr 20;  pb head
  endif
   ktopp     =  ktop
 
-            printks   ,"pb :%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot  
+;            printks   ,"pb :%d %1.4f %1.4f %d %d\n",1,p4,kfader,kpan,ktop,kbot  
 if gkprnctl == 1 then
   Span     sprintfk  ,"%s%1.4f ",gSpan,kpan
   Sfad     sprintfk  ,"%s%1.4f ",gSfad,kfader
