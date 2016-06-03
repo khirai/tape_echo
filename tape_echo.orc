@@ -1,13 +1,13 @@
-r=48000
-kr=48000
-ksmps=1
+sr=48000
+kr=4800
+ksmps=10
 nchnls=2
 0dbfs=1
 
 
   gal       init      0    ;; global audio 
   gar       init      0
-  gitlen    init      131072*8  ;; length of the segment of tape we are looping on
+  gitlen    init      131072*2                    ;;p length of the segment of tape we are looping on
  ; giratlen  init      32      
   gkeykp    init      0                           ;; page the kontrol has table
   gkprnctl  init      0
