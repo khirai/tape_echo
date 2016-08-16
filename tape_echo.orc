@@ -132,7 +132,11 @@ if gkprnctl == 1 then
   gStop     strcpyk  Stop
   gSbot     strcpyk  Sbot 
 endif
-  al,ar     ins       
+  ainl,ainr ins
+  krecnq    =  sr * kpantr / 2                 ; record nyquist sample rate * pan table ratio /2
+      
+  al        clfilt    ainl, krecnq, 0,10,2     ; 5th order cheb II filters at nq
+  ar        clfilt    ainr, krecnq, 0,10,2
 
     gat     phasor    kpan*sr/(gitlen*gktlen)     ;gat rec head position
 
