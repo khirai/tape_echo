@@ -202,8 +202,13 @@ endif
   ainl     tab       frac(at+katoff)*gitlen*gktlen,  3
   ainr     tab       frac(at+katoff)*gitlen*gktlen , 4
 
-  ar        =  kfader*ainr  ;*(kpan/128)
-  al        =  kfader*ainl  ;*(kpan/128-1)
+  krecnq    =  sr * kpantr / 2      ; record nyquist sample rate * pan table ratio /2
+      
+  alf        clfilt    ainl, krecnq, 0,10,2     ; 5th order cheb II filters at nq
+  arf        clfilt    ainr, krecnq, 0,10,2
+
+  ar        =  kfader*alf  ;*(kpan/128)
+  al        =  kfader*arf  ;*(kpan/128-1)
 
            outs      al,ar
 
