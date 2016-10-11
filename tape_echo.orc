@@ -134,10 +134,14 @@ if gkprnctl == 1 then
 endif
   ainl,ainr ins
   krecnq    =  sr * kpantr / 2                 ; record nyquist sample rate * pan table ratio /2
-      
-  al        clfilt    ainl, krecnq, 0,10,2     ; 5th order cheb II filters at nq
-  ar        clfilt    ainr, krecnq, 0,10,2
 
+if kpantr < 1.0 then
+  al        clfilt    ainl, krecnq, 0,6,2     ; 3rd order cheb II filters at nq
+  ar        clfilt    ainr, krecnq, 0,6,2
+else
+  al        =  ainl
+  ar        =  ainr
+endif
     gat     phasor    kpan*sr/(gitlen*gktlen)     ;gat rec head position
 
     ;; adjusteded head position in samples
