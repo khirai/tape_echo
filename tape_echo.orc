@@ -70,16 +70,17 @@ instr 15;  manages the length of the tape loop
 
     ; cleanup zicks
   kfader    =  ((63*kfader+kfadert/127.0)/64)
-  kfaderd2  tab kfader,5 ,1
+  kfaderd2  tab       kfader,5 ,1
   kpan      =  ((1023*kpan+kpant/127)/1024)
+  kpand2    tab       kpan, 5, 1
     ;; length of the  segment we are looping on 
 
 
 
-  gktlen    =  (kpan*kfaderd2*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
+  gktlen    =  (kpand2*kfaderd2*(gitlen-ksmps)+ksmps)/gitlen ;so we always play at least ksmps samples
 
 if gkprnctl == 1 then
-  Span     sprintfk  ,"%s%1.4f ",gSpan,kpan
+  Span     sprintfk  ,"%s%1.4f ",gSpan,kpand2
   Sfad     sprintfk  ,"%s%1.4f ",gSfad,kfaderd2
   Stop     sprintfk  ,"%s%6d ",gStop,ktop
   Sbot      sprintfk  ,"%s%6d ",gSbot,kbot
