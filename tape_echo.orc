@@ -1,7 +1,7 @@
-sr=48000
+sr=96000
 kr=4800
-ksmps=10
-nchnls=2
+ksmps=20
+nchnls=4
 0dbfs=1
 
 
@@ -133,8 +133,10 @@ if gkprnctl == 1 then
   gStop     strcpyk  Stop
   gSbot     strcpyk  Sbot 
 endif
-  al,ar     ins       
-
+  al,ar,alb,arb     inq       
+  al = al+alb
+  ar = ar+arb
+  
     gat     phasor    kpan*sr/(gitlen*gktlen)     ;gat rec head position
 
     ;; adjusteded head position in samples
@@ -152,7 +154,7 @@ endif
     awr       =     arr*kfader+ar       ;; set up the mix
               tabw  awr, aheadpos,   4  ;; write to table 
   endif
-;            outs      al*kfader, ar*kfader
+;            outq      al*kfader, ar*kfader, 0,0
 
 endin
 
@@ -202,7 +204,7 @@ endif
   ar        =  kfader*ainr  ;*(kpan/128)
   al        =  kfader*ainl  ;*(kpan/128-1)
 
-           outs      al,ar
+           outq      al,ar,0,0
 
 endin
 
