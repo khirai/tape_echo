@@ -1,13 +1,13 @@
 sr=96000
-kr=4800
-ksmps=20
+kr=9600
+ksmps=10
 nchnls=4
 0dbfs=1
 
 
   gal       init      0    ;; global audio 
   gar       init      0
-  gitlen    init      131072*2                    ;;p length of the segment of tape we are looping on
+  gitlen    init      131072*4                    ;;p length of the segment of tape we are looping on
  ; giratlen  init      32      
   gkeykp    init      0                           ;; page the kontrol has table
   gkprnctl  init      0
@@ -70,9 +70,10 @@ instr 15;  manages the length of the tape loop
 
     ; cleanup zicks
   kfader    =  ((63*kfader+kfadert/127.0)/64)
-  kfaderd2  tab       kfader,5 ,1
+  kfaderd2  tab       kfader*.97 ,5 ,1
+;            printks   "kfadert:%f, kfader:%f, kfader2:%f\n", 1.0, kfadert, kfader, kfaderd2	  
   kpan      =  ((1023*kpan+kpant/127)/1024)
-  kpand2    tab       kpan, 5, 1
+  kpand2    tab       kpan*.97, 5, 1
     ;; length of the  segment we are looping on 
 
 
@@ -110,7 +111,7 @@ instr 19; record head
 
     ; cleanup zicks
   kfader    =  ((63*kfader+kfadert/127)/64)
-  kpantr    tab       kpant/128,5,1               ;ratio table
+  kpantr    tab       kpant/130,5,1               ;ratio table
   kpan      =  ((63*kpan+kpantr)/64)
 
   if ktopp==0 && ktop!=0 then
@@ -173,7 +174,7 @@ instr 20;  pb head
 
     ; cleanup zicks
   kfader    =  ((63*kfader+kfadert/127)/64)
- kpantr    tab       kpant/128,5,1                   ;ratio table
+ kpantr    tab       kpant/130,5,1                   ;ratio table
   kpan      =  ((63*kpan+kpantr)/64)
  
     ; leading edge 
@@ -204,7 +205,7 @@ endif
   ar        =  kfader*ainr  ;*(kpan/128)
   al        =  kfader*ainl  ;*(kpan/128-1)
 
-           outq      al,ar,0,0
+           outq      al,ar,a(0),a(0)
 
 endin
 
